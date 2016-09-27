@@ -1,11 +1,11 @@
 <script type="text/javascript">
-  RED.nodes.registerType('brain', {
-    category: 'brain',
+  RED.nodes.registerType('brain2', {
+    category: 'analysis',
     color: '#a6bbcf',
     inputs: 1,
     outputs: 1,
     defaults: {
-      name: { value: 'brain' },
+      name: { value: 'brain2' },
       learningRate: { value: 0.3 },
       errorThresh: { value: 0.005 },
       iterations: { value: 20000 },
@@ -18,7 +18,7 @@
   })
 </script>
 
-<script type="text/x-red" data-template-name="brain">
+<script type="text/x-red" data-template-name="brain2">
   <div class="form-row">
     <label for="node-input-name">name</label>
     <input type="text" id="node-input-name">
