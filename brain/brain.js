@@ -58,7 +58,7 @@ module.exports = function(RED){
             stream.write(data[i]);
           }
 
-          stream.write(null);
+          stream.finishStreamIteration();
         }
       }
     })
