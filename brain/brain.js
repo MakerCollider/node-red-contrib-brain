@@ -12,28 +12,35 @@ module.exports = function(RED){
       text: 'waiting'
     })
 
+    node.net = new brain.NeuralNetwork();
+
     this.on('input', function(msg){
 
-      var net = new brain.NeuralNetwork(msg.neuralNetworkOptions)
+      if (!!msg.neuralNetworkOptions && !!msg.trainData) node.net = new brain.NeuralNetwork(msg.neuralNetworkOptions)
 
       if (msg.netJSON) {
-        // 不训练
-        net.fromJSON(msg.netJSON)
-        msg.payload = net.run(msg.runData)
+        //load network from external source
+        node.net.fromJSON(msg.netJSON)
+      }
+      if (!!msg.runData){
+        //got data to test, running current network
+        msg.decision = node.net.run(msg.runData)
         node.status({
           fill: 'green',
           shape: 'dot',
           text: 'running done'
         })
         node.send(msg)
-      } else {
+      } 
+      else if (!!msg.trainData) {
+        //got train data, training
         node.status({
           fill: 'yellow',
           shape: 'dot',
           text: 'training'
         })
 
-        var trainStream = net.createTrainStream({
+        var trainStream = node.net.createTrainStream({
 
           floodCallback: function() {
             flood(trainStream, msg.trainData);
@@ -45,8 +52,7 @@ module.exports = function(RED){
               shape: 'dot',
               text: 'trainning done'
             })
-            // msg.result = net.run(msg.runData)
-            msg.net = net.toJSON()
+            msg.net = node.net.toJSON()
             node.send(msg)
           }
         });
@@ -64,5 +70,5 @@ module.exports = function(RED){
     })
   }
 
-  RED.nodes.registerType('brain', Brain)
+  RED.nodes.registerType('brain2', Brain)
 }
